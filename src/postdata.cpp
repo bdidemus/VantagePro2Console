@@ -3,9 +3,6 @@
 #include <curl/curl.h>
 #include <cstring>
 
-// Set this to the loction of your webserver
-char* PostData::m_webPath = "http://www.rhaithware.com/weatherstation/datareceiver.php";
-
 bool PostData::postData(VantageData* dataObj)
 {
 	if(!dataObj)
@@ -40,7 +37,8 @@ bool PostData::postData(VantageData* dataObj)
 	curl = curl_easy_init();
 	if(curl)
 	{
-	curl_easy_setopt(curl, CURLOPT_URL, m_webPath);
+	curl_easy_setopt(curl, CURLOPT_URL,
+			"http://pragmatic.niagararesearch.ca:81/weatherstation/datareceiver.php");
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData);
 
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(postData));
