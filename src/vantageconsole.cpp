@@ -1,9 +1,12 @@
 #include "vantageconsole.h"
 #include "VantageData.h"
+
+#include <iostream>
 #include <stdio.h>
 #include <fcntl.h>
 #include <termios.h>
-#include <iostream>
+#include <unistd.h>
+
 #include "postdata.h"
 
 using namespace std;
