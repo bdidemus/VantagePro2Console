@@ -4,7 +4,7 @@
 class VantageData
 {
 public:
-	VantageData(unsigned char* data, int size);
+	VantageData(unsigned char data[], int size);
 	~VantageData();
 
 	float getOutsideTempF();
@@ -49,7 +49,7 @@ public:
 	int getSoilMoisture(int sensor);
 
 private:
-	unsigned char* m_data;
+	unsigned char *m_data;
 };
 
 #endif

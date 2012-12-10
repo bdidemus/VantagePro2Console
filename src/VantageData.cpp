@@ -1,11 +1,9 @@
 #include "VantageData.h"
 #include <cstring>
 
-VantageData::VantageData(unsigned char* data, int size) :
-m_data(0)
+VantageData::VantageData(unsigned char data[], int size)
 {
-	m_data = new unsigned char[500];
-	memcpy(m_data, data, size);
+	m_data = data;
 }
 
 float VantageData::getOutsideTempC()
@@ -75,7 +73,6 @@ int VantageData::getSoilMoisture(int sensor)
 
 VantageData::~VantageData()
 {
-	delete m_data;
 }
 
 

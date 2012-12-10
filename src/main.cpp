@@ -1,17 +1,23 @@
 #include "vantageconsole.h"
 
-using namespace std;
-
 int main(int argc, char **argv)
 {
-	std::string port = "/dev/ttyUSB0";
+	bool verbose = true;
+
+	VantageConsole* console = new VantageConsole(verbose);
 
 	if(argc > 1)
 	{
-		port = argv[1];
+		console->setPort(argv[1]);
 	}
-
-	VantageConsole* console = new VantageConsole(port, true);
+	if(argc > 2)
+	{
+		console->setWebPath(argv[2]);
+	}
+	if(argc > 3)
+	{
+		console->setOutFile(argv[3]);
+	}
 
 	console->openConnection();
 	console->startDataLoop();

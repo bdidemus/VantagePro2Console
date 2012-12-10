@@ -11,14 +11,14 @@ using namespace std;
 #define BUFFER_SIZE 500
 #define DELAY 30 // Time between next console query
 
-VantageConsole::VantageConsole(const string& port, bool verbose) :
-m_strPort(port),
+VantageConsole::VantageConsole(bool verbose) :
+m_strPort("/dev/ttyUSB0"),
 m_handle(-1),
 m_isAwake(false),
 m_loopTerminator(true),
-m_verbose(verbose)
+m_verbose(verbose),
+m_writeFile(false)
 {
-	m_buffer = new unsigned char[500];
 }
 
 void VantageConsole::openConnection()
@@ -63,12 +63,14 @@ bool VantageConsole::wakeUpConsole()
 
 		sleep(4);
 
-		read(m_handle, m_buffer, 2);
+		unsigned char buffer[BUFFER_SIZE];
+		read(m_handle, &buffer, 2);
 
-		if(m_buffer[0] == '\n' && m_buffer[1] == '\r')
+		if(buffer[0] == '\n' && buffer[1] == '\r')
 		{
 			printf("I'm awake\n");
 			m_isAwake = true;
+
 			break;
 		}
 	}
@@ -85,15 +87,17 @@ void VantageConsole::startDataLoop()
 		{
 			write(m_handle, "LOOP 1\n", 8);
 
-			memset(m_buffer, 0, sizeof(m_buffer)*500);
+			unsigned char buffer[BUFFER_SIZE];
+			//memset(m_buffer, 0, sizeof(m_buffer)*BUFFER_SIZE);
 
 			sleep(2);
 
-			int bytesRead = read(m_handle, m_buffer, 500);
+			int bytesRead = read(m_handle, &buffer, BUFFER_SIZE);
 
 			if(bytesRead > 0)
 			{
-				VantageData* vantageData = new VantageData(m_buffer, sizeof(m_buffer)*BUFFER_SIZE);
+				VantageData* vantageData = new VantageData(buffer, BUFFER_SIZE);
+
 				if(m_verbose)
 				{
 					printf("Inside Temp: %5.2f \n", vantageData->getInsideTempC());
@@ -104,7 +108,9 @@ void VantageConsole::startDataLoop()
 					printf("Wind Direction: %d \n", vantageData->getWindDirection());
 					printf("Wind Speed: %d /kmh \n\n", vantageData->getWindSpeedKmh());
 				}
-				PostData::postData(vantageData);
+				PostData::postData(vantageData, m_writeFile);
+
+				delete vantageData;
 			}
 
 			sleep(DELAY);
@@ -113,7 +119,33 @@ void VantageConsole::startDataLoop()
 	}
 }
 
+void VantageConsole::stopDataLoop()
+{
+	m_loopTerminator = true;
+}
+
 bool VantageConsole::isAwake()
 {
 	return m_isAwake;
 }
+
+void VantageConsole::setOutFile(char* outFile)
+{
+	PostData::setOutFile(outFile);
+	m_writeFile = true;
+}
+
+void VantageConsole::setWebPath(char* webPath)
+{
+	PostData::setWebPath(webPath);
+}
+
+void VantageConsole::setPort(const std::string& port)
+{
+	m_strPort = port;
+}
+
+VantageConsole::~VantageConsole()
+{
+}
+

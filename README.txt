@@ -2,7 +2,7 @@
 *	Author: Brett Didemus		
 *	Platform: Linux			 
 *	Date: October 2012
-*	Format: Eclipse C++ project w/ make files
+*	Format: Raw C++ source
 
 *	Pulls live data from the davis Vantage Pro 2 console
 	weather station system

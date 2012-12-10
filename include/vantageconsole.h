@@ -7,18 +7,22 @@
 class VantageConsole
 {
 public:
-	VantageConsole(const std::string& port, bool verbose = false);
+	VantageConsole(bool verbose = false);
+	~VantageConsole();
 
 	void openConnection();
 
 	void startDataLoop();
+	void stopDataLoop();
+
+	void setOutFile(char* outFile);
+	void setWebPath(char* webPath);
+	void setPort(const std::string&);
 
 	bool isAwake();
 
 private:
 	bool wakeUpConsole();
-
-	unsigned char *m_buffer;
 
 	std::string m_strPort;
 
@@ -27,6 +31,7 @@ private:
 	bool m_isAwake;
 	bool m_verbose; // prints incoming data to console
 	bool m_loopTerminator;
+	bool m_writeFile;
 };
 
 #endif
